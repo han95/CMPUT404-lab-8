@@ -82,6 +82,25 @@ wss.on('connection', function(ws) {
 });
 
 /*
+	 Reference: 
+	 https://gist.github.com/awwong1/90d50ffa41cfc5ef7ea4
+	*/
+	
+	var players = {};
+	
+	wss.on('connection', function(ws) {
+	  ws.on('message', function(message) {
+	    var incommingMsg = JSON.parse(message);
+	    players[incommingMsg.uuid] = {x: incommingMsg.x, y: incommingMsg.y};
+	    for(var i in wss.clients) {
+	      wss.clients[i].send(JSON.stringify(players));
+	    }
+	
+	  });
+	  ws.send(JSON.stringify(players));
+	});
+	
+/*
 app.listen(3000, function () {
   console.log('Web server started on 3000!');
 });
